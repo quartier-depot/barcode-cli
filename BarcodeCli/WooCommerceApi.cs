@@ -1,4 +1,5 @@
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
 
 public class WooCommerceApi
@@ -24,6 +25,6 @@ public class WooCommerceApi
     public async Task<HttpResponseMessage> PostAsync(string endpoint, Dictionary<string, string> parameters, string json)
     {
         var queryString = string.Join("&", parameters.Select(kvp => $"{kvp.Key}={Uri.EscapeDataString(kvp.Value)}"));
-        return await httpClient.PostAsync($"{endpoint}?{queryString}", new StringContent(json));
+        return await httpClient.PostAsync($"{endpoint}?{queryString}", new StringContent(json, Encoding.UTF8, "application/json"));
     }
 }

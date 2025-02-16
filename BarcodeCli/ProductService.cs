@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -93,7 +94,7 @@ class ProductService
 
         string json = $$"""
         {
-            "id": "{{product.Id}}"",
+            "id": "{{product.Id}}",
             "meta_data": [
                 {
                     "key": "barcode",
@@ -105,8 +106,16 @@ class ProductService
 
         try
         {
-            var response = await api.PostAsync("products/" + product.Id, new Dictionary<string, string>(), json);
+            var response = await api.PostAsync("products/" + product.Id, [], json);
+            var updatedJson = await response.Content.ReadAsStringAsync();
+            var updatedProduct = new Product(JsonDocument.Parse(updatedJson).RootElement);
             response.EnsureSuccessStatusCode();
+            if (updatedProduct == null) {
+                throw new Exception("Updated product is null.");
+            }
+            if (updatedProduct.Barcode != barcode) {
+                throw new Exception("Updated product does not contain barcode.");
+            }
             Console.WriteLine("Barcode saved.");
         }
         catch (Exception e)
