@@ -2,7 +2,6 @@ using System.Text.Json;
 
 internal class Product
 {
-    public string Permalink { get; set; }
     public string Slug { get; set; }
     public int Id { get; set; }
     public string Name { get; set; }
@@ -14,7 +13,6 @@ internal class Product
     {
         this.Id = item.GetProperty("id").GetInt16();
         this.Name = item.GetProperty("name").GetString() ?? "";
-        this.Permalink = item.GetProperty("permalink").GetString() ?? "";
         this.Slug = item.GetProperty("slug").GetString() ?? "";
 
         var metaData = item.GetProperty("meta_data").EnumerateArray();
