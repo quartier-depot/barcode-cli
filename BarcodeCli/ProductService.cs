@@ -70,7 +70,8 @@ class ProductService
 
         return [.. products.FindAll(product =>
             (searchTerm.StartsWith("https") && searchTerm.EndsWith(product.Id.ToString())) ||
-            product.ArtikelId == searchTerm)];
+            product.ArtikelId == searchTerm ||
+            searchTerm.Contains(product.Slug))];
     }
 
     internal void SetBarcode(Product product, string? barcodeInput)
