@@ -83,12 +83,14 @@ class ProductService
     {
         if (String.IsNullOrWhiteSpace(barcode))
         {
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("ERROR Barcode not saved (no barcode given).");
             return;
         }
 
         if ("skip".Equals(barcode, StringComparison.OrdinalIgnoreCase))
         {
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("SKIP Barcode not saved.");
             return;
         }
@@ -117,10 +119,13 @@ class ProductService
             if (updatedProduct.Barcode != barcode) {
                 throw new Exception("Updated product does not contain barcode.");
             }
+
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine("Barcode saved.");
         }
         catch (Exception e)
         {
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"ERROR Barcode not saved ({e.Message})");
         }
     }

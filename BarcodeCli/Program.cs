@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
+using NetCoreAudio;
+using System.Media;
 
 var config = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
@@ -45,6 +47,9 @@ Console.Write(Environment.NewLine);
 Console.WriteLine("Initialized "+allProducts.Count+" products.");
 Console.WriteLine("Press Ctrl-C to exit");
 Console.WriteLine("");
+var player = new Player();
+var alert = "sound/alert.mp3";
+var confirm = "sound/confirm.mp3";
 
 do {
     Console.Write("Product: ");
@@ -52,20 +57,34 @@ do {
     var products = service.Search(productInput ?? "");
     switch (products.Count) {
         case 0:
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("No product found with search term.");
+
+            await player.Play(alert);
             break;
+            
         case 1:
             var product = products[0];
+
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine("Found: "+product.ArtikelId +" - "+product.Name);
+
+            await player.Play(confirm);
+
+            Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Barcode: ");
+
             var barcodeInput = Console.ReadLine();
             await service.SetBarcodeAsync(product, barcodeInput);
             break;
-        default:
-            Console.WriteLine("Found multiple products.");
-            break;
 
+        default:
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Found multiple products.");
+            await player.Play(alert);
+            break;
     }
+    Console.ForegroundColor = ConsoleColor.White;
     Console.WriteLine();
     Console.WriteLine(new string('-', 100));
     Console.WriteLine();
