@@ -11,7 +11,7 @@ internal class Product
 
     public Product(JsonElement item)
     {
-        this.Id = item.GetProperty("id").GetInt16();
+        this.Id = item.GetProperty("id").GetInt32();
         this.Name = item.GetProperty("name").GetString() ?? "";
         this.Slug = item.GetProperty("slug").GetString() ?? "";
 
