@@ -25,23 +25,24 @@ class ProductService
 
         var response = await api.GetAsync("products", new Dictionary<string, string>
         {
-            { "status", "publish" }
+            { "status", "publish" },
+            { "per_page", MaximumItemsPerPage.ToString() },
+            { "page", "1" }
         });
         Console.Write(".");
 
         response.EnsureSuccessStatusCode();
-        int total = int.Parse(response.Headers.GetValues("x-wp-total").First());
+        int total = int.Parse(response.Headers.GetValues("x-wp-totalpages").First());
 
-        int numberOfRequests = (int)Math.Ceiling(total / MaximumItemsPerPage);
         var tasks = new List<Task<HttpResponseMessage>>();
 
-        for (int i = 0; i < numberOfRequests; i++)
+        for (int i = 0; i <= total; i++)
         {
             tasks.Add(api.GetAsync("products", new Dictionary<string, string>
             {
                 { "status", "publish" },
                 { "per_page", MaximumItemsPerPage.ToString() },
-                { "page", (i + 1).ToString() }
+                { "page", (i+1).ToString() }
             }));
         }
 
